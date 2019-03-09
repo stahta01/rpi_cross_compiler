@@ -35,21 +35,12 @@ source=("https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/${_filename}-${pkgver}.tar.bz
         011-gcc-4.3-suppress-makeinfo-warning.patch
         015-gcc-4.3-add-force-to-makeinfo.patch
         016-gcc-4.6-Fix-texi-docs-syntax-errors.patch)
-sha256sums=(''
-            '48e8df8fb5c2266f34ba96d159cc2a2aad5cb285403ec59e93408afccc9a100e'
-            '5ba2dd1c4dec84162224ebccee8c7a6e6d9f18a2f6f281c42c05e7e7da89b7fd'
+sha256sums=('e8f5853d4eec2f5ebaf8a72ae4d53c436aacf98153b2499f8635b48c4718a093'
             '8222c61a049e1a09af1f53fb3d6a6146d0b850d3a033dace0d9d93570e03e580'
-            '5faba14f433e405d601d6c352bd8d67fae02c46395acdbf13d7d92dc10acae93'
-            '5ce48e53b2cd2e877454e15e2678eae1b4c7de49241ed993bb511068154d024b'
             '30b1ce83f5444f2c8314e40f8e346581b2f2cec007f3eb33cb894a2930dc4265'
-            '03c721159461908051c1718770c4f79dbaa2d97f9ed67deeab7349e280017662'
             'dd174b790a13d43e527a3d5807cf415407bd0c67532495da139afd14a6265462'
             'd02434150e94b970603607e751718a96cbcbc7c080ddbd9517069968f0660ad4'
-            '601fa8735a64292b687024291350173c61e34d2386e33288b0a9e5b52f2f93c7'
-            'd4de015bf1d5462f6c5985b6cd279b146113625f56e833d6dd0ac0e7670aa242'
-            'e4441cb51a48a528507e3a6232594d0c4ee8945bb301fae13331441011f355c3'
-            '3183d14c89aaafc1d5c4bc2d9c09812bc229e82cb91d9e1e7c3b9b5da25eb42a'
-            '0e7ca6ad4f0af44b2e611ac49b61a9b801414bef6e0b5d83da0023d079e174d1')
+            '3183d14c89aaafc1d5c4bc2d9c09812bc229e82cb91d9e1e7c3b9b5da25eb42a')
 prepare() {
   tar -xjf ${_filename}-${pkgver}.tar.bz2 -C ${srcdir}  --checkpoint=100 \
     --exclude=${_foldername}-${pkgver}/{INSTALL,libjava,libgo,libgfortran} \
