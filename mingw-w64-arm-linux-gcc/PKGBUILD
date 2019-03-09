@@ -19,7 +19,7 @@ fi
 pkgver=4.6.3
 pkgrel=1
 arch=('any')
-url="https://github.com/stahta01/gcc4.3"
+url="https://github.com/stahta01/gcc4"
 license=('GPL3')
 groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
 conflicts=(${MINGW_PACKAGE_PREFIX}-${_realname_prefix}${_basename})
@@ -28,35 +28,14 @@ depends=(${MINGW_PACKAGE_PREFIX}-mpc)
 makedepends=(${MINGW_PACKAGE_PREFIX}-gettext
   'bison' 'diffutils' 'gettext' 'gettext-devel'
   'intltool' 'make' 'patch' 'perl' 'tar' 'texinfo')
-if [[ ${pkgver} == "4.3.6" ]] ; then
-  _source_sha256sum='f3765cd4dcceb4d42d46f0d53471d7cedbad50f2112f0312c1dcc9c41eea9810'
-elif [[ ${pkgver} == "4.4.7" ]] ; then
-  _source_sha256sum='5ff75116b8f763fa0fb5621af80fc6fb3ea0f1b1a57520874982f03f26cd607f'
-elif [[ ${pkgver} == "4.5.4" ]] ; then
-  _source_sha256sum='eef3f0456db8c3d992cbb51d5d32558190bc14f3bc19383dd93acc27acc6befc'
-elif [[ ${pkgver} == "4.6.4" ]] ; then
-  _source_sha256sum='35af16afa0b67af9b8eb15cafb76d2bc5f568540552522f5dc2c88dd45d977e8'
-else
-  echo "Skipping gcc sha256sums check!"
-  _source_sha256sum='SKIP'
-fi
 noextract=(${_filename}-${pkgver}.tar.bz2)
 source=("https://ftp.gnu.org/gnu/gcc/gcc-${pkgver}/${_filename}-${pkgver}.tar.bz2"
-        001-gcc-4.3-fixed-compile-issue-with-gcc-5-in-gcc-toplev.patch
-        002-gcc-4.4.7-add-DWARF2_UNWIND_INFO-guard.patch
         003-gcc-4.5-add-GNUC_STDC_INLINE.patch
-        005-gcc-4.3-core-prevent-naked-function-from-creating-stack-slots.patch
-        006-gcc-4.3-PR_54300_rtl-optimization.patch
         006-gcc-4.5-PR_54300_rtl-optimization.patch
-        008-gcc-4.6-PR-bootstrap-51969.patch
         011-gcc-4.3-suppress-makeinfo-warning.patch
         015-gcc-4.3-add-force-to-makeinfo.patch
-        016-gcc-4.3-Fix-texi-docs-syntax-errors.patch
-        016-gcc-4.4-Fix-texi-docs-syntax-errors.patch
-        016-gcc-4.5-Fix-texi-docs-syntax-errors.patch
-        016-gcc-4.6-Fix-texi-docs-syntax-errors.patch
-        016-gcc-4.6.4-Fix-texi-docs-syntax-errors.patch)
-sha256sums=(${_source_sha256sum}
+        016-gcc-4.6-Fix-texi-docs-syntax-errors.patch)
+sha256sums=(''
             '48e8df8fb5c2266f34ba96d159cc2a2aad5cb285403ec59e93408afccc9a100e'
             '5ba2dd1c4dec84162224ebccee8c7a6e6d9f18a2f6f281c42c05e7e7da89b7fd'
             '8222c61a049e1a09af1f53fb3d6a6146d0b850d3a033dace0d9d93570e03e580'
@@ -78,29 +57,10 @@ prepare() {
 
   cd ${_foldername}-${pkgver}
 
-  # Fixes for building with GCC version 5 or newer
-  if [[ ${pkgver:0:3} == "4.3" || ${pkgver:0:3} == "4.4" ]] ; then
-    patch --forward -p1 -i "$srcdir"/001-gcc-4.3-fixed-compile-issue-with-gcc-5-in-gcc-toplev.patch
-  fi
-  if [[ ${pkgver} == "4.4.7" || ${pkgver} == "4.5.4" ]] ; then
-    patch --forward -p1 -i "$srcdir"/002-gcc-4.4.7-add-DWARF2_UNWIND_INFO-guard.patch
-  fi
-  if [[ ${pkgver:0:3} == "4.6" || ${pkgver:0:3} == "4.5" ]] ; then
-    patch --forward -p1 -i "$srcdir"/003-gcc-4.5-add-GNUC_STDC_INLINE.patch
-  fi
+  patch --forward -p1 -i "$srcdir"/003-gcc-4.5-add-GNUC_STDC_INLINE.patch
 
   # Backported Pull Requests or other changes from other branches
-  if [[ ${pkgver:0:3} == "4.3" ]] ; then
-    patch --forward -p1 -i "$srcdir"/005-gcc-4.3-core-prevent-naked-function-from-creating-stack-slots.patch
-  fi
-  if [[ ${pkgver:0:3} == "4.3" || ${pkgver:0:3} == "4.4" ]] ; then
-    patch --forward -p1 -i "$srcdir"/006-gcc-4.3-PR_54300_rtl-optimization.patch
-  else
-    patch --forward -p1 -i "$srcdir"/006-gcc-4.5-PR_54300_rtl-optimization.patch
-  fi
-  if [[ ${pkgver} == "4.6.2" ]] ; then
-    patch --forward -p1 -i "$srcdir"/008-gcc-4.6-PR-bootstrap-51969.patch
-  fi
+  patch --forward -p1 -i "$srcdir"/006-gcc-4.5-PR_54300_rtl-optimization.patch
 
   # Warning reduction changes
   patch --forward -p1 -i "$srcdir"/011-gcc-4.3-suppress-makeinfo-warning.patch
@@ -108,19 +68,7 @@ prepare() {
   # Build code fix for documentation
   patch --forward -p1 -i "$srcdir"/015-gcc-4.3-add-force-to-makeinfo.patch
   # Sourcecode fix for documentation
-  if [[ ${pkgver:0:3} == "4.3" ]] ; then
-    patch --forward -p1 -i "$srcdir"/016-gcc-4.3-Fix-texi-docs-syntax-errors.patch
-  elif [[ ${pkgver:0:3} == "4.4" ]] ; then
-    patch --forward -p1 -i "$srcdir"/016-gcc-4.4-Fix-texi-docs-syntax-errors.patch
-  elif [[ ${pkgver:0:3} == "4.5" ]] ; then
-    patch --forward -p1 -i "$srcdir"/016-gcc-4.5-Fix-texi-docs-syntax-errors.patch
-  elif [[ ${pkgver:0:3} == "4.6" ]] ; then
-    if [[ ${pkgver} == "4.6.4" ]] ; then
-      patch --forward -p1 -i "$srcdir"/016-gcc-4.6.4-Fix-texi-docs-syntax-errors.patch
-    else
-      patch --forward -p1 -i "$srcdir"/016-gcc-4.6-Fix-texi-docs-syntax-errors.patch
-    fi
-  fi
+  patch --forward -p1 -i "$srcdir"/016-gcc-4.6-Fix-texi-docs-syntax-errors.patch
 }
 
 build() {
