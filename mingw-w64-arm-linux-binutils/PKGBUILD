@@ -12,6 +12,7 @@ arch=('any')
 url="https://www.gnu.org/software/binutils/"
 license=('GPL')
 makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+conflicts=(${MINGW_PACKAGE_PREFIX}-arm-none-eabi-binutils)
 options=(staticlibs)
 source=("https://mirrors.kernel.org/sources.redhat.com/${_realname}/releases/${_realname}-${pkgver}.tar.bz2")
 #sha256sums=('6c7af8ed1c8cf9b4b9d6e6fe09a3e1d3d479fe63984ba8b9b26bf356b6313ca9')
