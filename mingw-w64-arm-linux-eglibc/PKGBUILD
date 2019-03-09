@@ -1,0 +1,39 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_basename=eglibc
+_realname_prefix=arm-linux-
+_realname=${_realname_prefix}${_basename}
+_filename=${_basename}
+_foldername=${_basename}
+_target=arm-linux-gnueabi
+
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_target}-${_realname}")
+pkgver=2.13
+pkgrel=1
+pkgdesc="A C standard library implementation for the ARM microprocessors (mingw-w64)"
+arch=('any')
+url="http://www.eglibc.org"
+license=('(L)GPL')
+groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
+depends=()
+makedepends=("${MINGW_PACKAGE_PREFIX}-boot-arm-gcc" "${MINGW_PACKAGE_PREFIX}-${_target}-binutils")
+options=('staticlibs' '!strip' '!emptydirs')
+source=("https://archive.raspbian.org/raspbian/pool/main/e/eglibc/eglibc_${pkgver}.orig.tar.gz")
+sha256sums=('')
+#prepare() {
+  #cd ${srcdir}/${_filename}-${pkgver}
+#}
+
+build() {
+  if [[ -d "build-gcc-${CARCH}" ]]; then
+    rm -rf build-gcc-${CARCH}
+  fi
+  mkdir build-gcc-${CARCH}
+  cd build-gcc-${CARCH}
+}
+
+package() {
+  cd ${srcdir}/build-${CARCH}
+}
+
