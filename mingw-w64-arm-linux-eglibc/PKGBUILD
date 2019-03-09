@@ -32,6 +32,17 @@ build() {
   fi
   mkdir build-libc-${CARCH}
   cd build-libc-${CARCH}
+
+  RANLIB=$PREFIX/bin/${_target}-ranlib \
+  MAKEINFO=: \
+  ../${_foldername}-${pkgver}/configure \
+    --prefix=${MINGW_PREFIX} \
+    --with-headers=/usr/$_target \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --enable-kernel=3.0.0 \
+    --disable-profile --without-gd \
+    --without-cvs --enable-add-ons
 }
 
 package() {
