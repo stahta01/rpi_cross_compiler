@@ -1,0 +1,51 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+
+_realname=binutils
+_target=arm-linux-gnueabi
+
+pkgbase=mingw-w64-arm-linux-${_realname}
+pkgname=(${MINGW_PACKAGE_PREFIX}-${_target}-${_realname})
+pkgver=2.19.1
+#pkgver=2.22
+pkgrel=1
+arch=('any')
+url="https://www.gnu.org/software/binutils/"
+license=('GPL')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+options=(staticlibs)
+source=("https://mirrors.kernel.org/sources.redhat.com/${_realname}/releases/${_realname}-${pkgver}.tar.bz2")
+#sha256sums=('6c7af8ed1c8cf9b4b9d6e6fe09a3e1d3d479fe63984ba8b9b26bf356b6313ca9')
+sha256sums=('3e8225b4d7ace0a2039de752e11fd6922d3b89a7259a292c347391c4788739f6')
+
+build() {
+    plain "building ${MINGW_PACKAGE_PREFIX}-${_target}-${_realname}"
+
+    cd ${srcdir}
+    [[ -d build-${MINGW_CHOST}-${_target} ]] && rm -rf build-${MINGW_CHOST}-${_target}
+    mkdir -p build-${MINGW_CHOST}-${_target} && cd build-${MINGW_CHOST}-${_target}
+
+    ../${_realname}-${pkgver}/configure \
+      --build="${MINGW_CHOST}" \
+      --host="${MINGW_CHOST}" \
+      --target="${_target}" \
+      --prefix="${MINGW_PREFIX}" \
+      --with-sysroot="${MINGW_PREFIX}" \
+      --disable-nls \
+      --disable-rpath \
+      --disable-werror \
+      --enable-multilib \
+      --enable-interwork
+
+    make
+}
+
+_package_target() {
+  pkgdesc="GNU Tools for ${1} target - Binutils (mingw-w64)"
+  groups=("${MINGW_PACKAGE_PREFIX}-${1}-toolchain")
+
+  cd ${srcdir}/build-${MINGW_CHOST}-${1}
+  make DESTDIR=${pkgdir} install
+  rm -rf ${pkgdir}${MINGW_PREFIX}/share/info
+}
+
+eval "package_${MINGW_PACKAGE_PREFIX}-${_target}-${_realname}() { _package_target ${_target}; }"
