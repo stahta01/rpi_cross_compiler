@@ -1,0 +1,47 @@
+# Maintainer: Tim S <stahta01@gmail.com>
+# Based package on https://www.archlinux.org/packages/community/any/aarch64-linux-gnu-linux-api-headers/
+
+_realname=api-headers
+_target_arch=arm
+_target=arm-linux-gnueabi
+
+pkgbase=mingw-w64-arm-linux-${_realname}
+pkgname=(${MINGW_PACKAGE_PREFIX}-${_target}-${_realname})
+pkgver=3.2.22
+pkgrel=1
+arch=('any')
+url='https://www.kernel.org'
+license=(GPL2)
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+options=(staticlibs)
+noextract=(linux-${pkgver}.tar.bz2)
+source=(https://www.kernel.org/pub/linux/kernel/v3.x/linux-$pkgver.tar.{bz2,sign})
+sha256sums=('4f94bc82fb0945ee70cb89285a1b37159dad2139730877701890271b73e7c9cb'
+            'SKIP')
+validpgpkeys=(
+  'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
+  '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
+)
+
+prepare() {
+  tar --overwrite -xjf linux-${pkgver}.tar.bz2 --checkpoint=250 \
+    --exclude=linux-${pkgver}/arch/microblaze/
+}
+
+build() {
+    plain "no build steps needed"
+}
+
+_package_target() {
+  pkgdesc="Kernel headers sanitized for use in userspace ${1} (mingw-w64)"
+  groups=("${MINGW_PACKAGE_PREFIX}-${1}-toolchain")
+
+  cd linux-$pkgver
+
+  make INSTALL_HDR_PATH="$pkgdir/usr/$_target/" ARCH=$_target_arch V=0 headers_install
+
+  # clean-up unnecessary files generated during install
+  find "$pkgdir" \( -name .install -or -name ..install.cmd \) -delete
+}
+
+eval "package_${MINGW_PACKAGE_PREFIX}-${_target}-${_realname}() { _package_target ${_target}; }"
