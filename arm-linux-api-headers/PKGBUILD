@@ -5,14 +5,13 @@ _realname=api-headers
 _target_arch=arm
 _target=arm-linux-gnueabi
 
-pkgbase=mingw-w64-arm-linux-${_realname}
-pkgname=(${MINGW_PACKAGE_PREFIX}-${_target}-${_realname})
+pkgbase=arm-linux-${_realname}
+pkgname=(${_target}-${_realname})
 pkgver=3.2.22
 pkgrel=1
 arch=('any')
 url='https://www.kernel.org'
 license=(GPL2)
-makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
 options=(staticlibs)
 noextract=(linux-${pkgver}.tar.bz2)
 source=(https://www.kernel.org/pub/linux/kernel/v3.x/linux-$pkgver.tar.{bz2,sign})
@@ -32,9 +31,8 @@ build() {
     plain "no build steps needed"
 }
 
-_package_target() {
-  pkgdesc="Kernel headers sanitized for use in userspace ${1} (mingw-w64)"
-  groups=("${MINGW_PACKAGE_PREFIX}-${1}-toolchain")
+package() {
+  pkgdesc="Kernel headers sanitized for use in userspace ${_target}"
 
   cd linux-$pkgver
 
@@ -43,5 +41,3 @@ _package_target() {
   # clean-up unnecessary files generated during install
   find "$pkgdir" \( -name .install -or -name ..install.cmd \) -delete
 }
-
-eval "package_${MINGW_PACKAGE_PREFIX}-${_target}-${_realname}() { _package_target ${_target}; }"
