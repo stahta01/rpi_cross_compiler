@@ -116,7 +116,13 @@ build() {
     --with-ld=${MINGW_PREFIX}/bin/${_target}-ld \
     --with-ar=${MINGW_PREFIX}/bin/${_target}-ar
 
-  make -j1 all-gcc # all-target-libgcc
+    #--with-arch=armv6 --with-fpu=vfp --with-float=hard \
+    #--disable-sjlj-exceptions --enable-checking=release \
+    #--enable-linker-build-id --enable-gnu-unique-object \
+    #--disable-nls  \
+    #--without-ppl --without-cloog
+
+  make -j1 all-gcc
 }
 
 #check() {
