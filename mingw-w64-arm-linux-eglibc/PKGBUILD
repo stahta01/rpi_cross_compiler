@@ -17,13 +17,21 @@ url="http://www.eglibc.org"
 license=('(L)GPL')
 groups=("${MINGW_PACKAGE_PREFIX}-${_target}-toolchain")
 depends=()
-makedepends=("${MINGW_PACKAGE_PREFIX}-boot-arm-linux-gcc" "${MINGW_PACKAGE_PREFIX}-${_target}-binutils")
+makedepends=(
+  ${MINGW_PACKAGE_PREFIX}-boot-arm-linux-gcc
+  ${MINGW_PACKAGE_PREFIX}-${_target}-binutils
+)
 options=('staticlibs' '!strip' '!emptydirs')
-source=("https://archive.raspbian.org/raspbian/pool/main/e/eglibc/eglibc_${pkgver}.orig.tar.gz")
-md5sums=('be63a487c69b3f4198def94d7254b250')
-
+source=(
+  "https://archive.raspbian.org/raspbian/pool/main/e/eglibc/eglibc_${pkgver}.orig.tar.gz"
+  301-eglibc-2.13-cross-cygwin.patch
+)
+sha256sums=('5e6dce233f0d0f89453b369efbc1ff360956b5d2de45c03c9bc8c52eef98868f'
+            '69219fe72486cf1e336a514cf25264b78bda624a20b5be17bc834d3f8539e896')
 prepare() {
   cd ${srcdir}/${_foldername}-${pkgver}
+
+  patch --forward -p1 -i "$srcdir"/301-eglibc-2.13-cross-cygwin.patch
 }
 
 build() {
@@ -33,16 +41,19 @@ build() {
   mkdir build-libc-${CARCH}
   cd build-libc-${CARCH}
 
-  RANLIB=$PREFIX/bin/${_target}-ranlib \
+  RANLIB=${MINGW_PREFIX}/bin/${_target}-ranlib \
   MAKEINFO=: \
+  CC=x86_64-pc-msys-gcc.exe \
   ../${_foldername}-${pkgver}/configure \
     --prefix=${MINGW_PREFIX} \
-    --with-headers=/usr/$_target \
-    --build=${MINGW_CHOST} \
+    --with-headers=/usr/${_target} \
+    --build=${MSYSTEM_CARCH}-pc-cygwin \
     --host=${MINGW_CHOST} \
     --enable-kernel=3.0.0 \
-    --disable-profile --without-gd \
-    --without-cvs --enable-add-ons
+    --disable-profile \
+    --without-gd \
+    --without-cvs \
+    --enable-add-ons
 }
 
 package() {
